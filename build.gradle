@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         google()
@@ -8,16 +11,15 @@ buildscript {
     }
 }
 
-// Accept Android SDK licenses so AGP can auto-install any missing SDK components
+// Write every Android SDK license hash so the build can auto-install missing SDK packages
 def sdkDir = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 if (sdkDir != null) {
-    try {
-        def licensesDir = new File(sdkDir, "licenses")
-        licensesDir.mkdirs()
-        new File(licensesDir, "android-sdk-license").text = "\nd56f5187479451eabf01fb78af6dfcb131a6481e\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd975f751698a77b662f1254ddbeed3901e943f1e"
-        new File(licensesDir, "android-sdk-preview-license").text = "\n84831b9409646a918e30573bab4c9c9137d47a98"
-    } catch (ignored) {
-    }
+    def licensesDir = new File(sdkDir, "licenses")
+    licensesDir.mkdirs()
+    new File(licensesDir, "android-sdk-license").text = "\nd56f5187479451eabf01fb78af6dfcb131a6481e\n8933bad161af4178b1185d1a37fbf41ea5269c55\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd975f751698a77b662f1254ddbeed3901e943f1e"
+    new File(licensesDir, "android-sdk-preview-license").text = "\n84831b9409646a918e30573bab4c9c9137d47a98"
+    println "SDK licenses written to: " + licensesDir.getAbsolutePath()
+    println "License file content: " + new File(licensesDir, "android-sdk-license").text
 }
 
 allprojects {
@@ -29,45 +31,4 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-// Diagnostics: when the build fails, surface the real Gradle error as GitHub
-// annotations (::error::) and try to save the full stack trace into the repo.
-gradle.buildFinished { result ->
-    if (result.failure == null) {
-        return
-    }
-    try {
-        def f = result.failure
-        def sw = new StringWriter()
-        f.printStackTrace(new PrintWriter(sw))
-        def logText = sw.toString()
-        try {
-            new File(rootProject.projectDir, "build-log.txt").text = logText
-        } catch (ignored) {
-        }
-        int n = 0
-        def c = f
-        while (c != null && n < 5) {
-            def line = (c.getClass().getName() + ": " + c.getMessage())
-            line = line.replaceAll("[\\r\\n%]", " ")
-            if (line.length() > 190) {
-                line = line.substring(0, 190)
-            }
-            println "::error::" + line
-            n++
-            c = c.getCause()
-        }
-        logText.readLines().each { l ->
-            if (n < 9 && (l.contains("What went wrong") || l.contains("error:") || l.contains("Caused by") || l.contains(".java"))) {
-                def line = l.replaceAll("[\\r\\n%]", " ")
-                if (line.length() > 190) {
-                    line = line.substring(0, 190)
-                }
-                println "::error::" + line
-                n++
-            }
-        }
-    } catch (ignored) {
-    }
 }
