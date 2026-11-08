@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Licenses
+        run: mkdir -p $ANDROID_HOME/licenses && printf "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+      - name: Install SDK
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" > /dev/null
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -17,10 +21,6 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '5.6.4'
-      - name: Licenses
-        run: mkdir -p $ANDROID_HOME/licenses && printf "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
-      - name: Install SDK
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" > /dev/null
       - name: Build
         run: gradle assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
