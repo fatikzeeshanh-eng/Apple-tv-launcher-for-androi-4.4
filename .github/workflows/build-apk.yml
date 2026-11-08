@@ -20,7 +20,12 @@ jobs:
         with:
           gradle-version: '5.6.4'
       - name: Accept Android SDK licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
+        run:      - name: Accept Android SDK licenses
+        run: |
+          mkdir -p $ANDROID_HOME/licenses
+          echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+          echo -e "\n84831b9409646a918e30573bab4c9c9137d47a98" > $ANDROID_HOME/licenses/android-sdk-preview-license
+
       - name: Install Android SDK 28
         run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" > /dev/null
       - name: Build debug APK
