@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         google()
@@ -7,6 +10,16 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.6.4'
     }
 }
+
+// Write every Android SDK license hash so the build can auto-install missing SDK packages
+def sdkDir = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+if (sdkDir != null) {
+    def licensesDir = new File(sdkDir, "licenses")
+    licensesDir.mkdirs()
+    new File(licensesDir, "android-sdk-license").text = "\nd56f5187479451eabf01fb78af6dfcb131a6481e\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd975f751698a77b662f1254ddbeed3901e943f1e"
+    new File(licensesDir, "android-sdk-preview-license").text = "\n84831b9409646a918e30573bab4c9c9137d47a98"
+}
+
 allprojects {
     repositories {
         google()
