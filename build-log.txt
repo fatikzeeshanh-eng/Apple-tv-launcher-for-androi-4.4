@@ -5610,7 +5610,7 @@ Checking the license for package Android SDK Build-Tools 28.0.3 in /usr/local/li
 Warning: License for package Android SDK Build-Tools 28.0.3 not accepted.
 Checking the license for package Android SDK Platform 28 in /usr/local/lib/android/sdk/licenses
 Warning: License for package Android SDK Platform 28 not accepted.
-Got buildFinished: org.gradle.BuildResult@3c9b3526
+Got buildFinished: org.gradle.BuildResult@455d6057
 
 FAILURE: Build failed with an exception.
 
@@ -5773,4 +5773,4 @@ Using Android SDK: /usr/local/lib/android/sdk
 
 * Get more help at https://help.gradle.org
 
-BUILD FAILED in 18s
+BUILD FAILED in 17s
